@@ -1,0 +1,33 @@
+# ==============================================================================
+# Linux Systemd Service for Student Management AI API (EWB Day 11 Production Note)
+# File Location on Linux Server: /etc/systemd/system/student-api.service
+# ==============================================================================
+
+[Unit]
+Description=NexusEdu Student Management AI Production Service
+After=network.target
+
+[Service]
+# User account executing the process (e.g., ubuntu, root, or your local user)
+User=ubuntu
+
+# Absolute path to the project root directory
+WorkingDirectory=/home/ubuntu/student-management-ai
+
+# Path to the virtual environment Python / Uvicorn executable
+Environment="PATH=/home/ubuntu/student-management-ai/venv/bin"
+
+# Continuous background daemon command (avoids the Day 11 'instant exit' problem)
+ExecStart=/home/ubuntu/student-management-ai/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 2
+
+# Automatic restart on crash or exit
+Restart=always
+RestartSec=5
+
+# Standard output and error logging to systemd journal
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+# Defines multi-user target state for automatic boot startup
+WantedBy=multi-user.target
